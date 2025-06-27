@@ -446,10 +446,9 @@ class PPOLoss(LossModule):
         try:
             log_prob_keys = self.actor_network.log_prob_keys
             action_keys = self.actor_network.dist_sample_keys
-            if len(log_prob_keys) > 1:
-                self.set_keys(sample_log_prob=log_prob_keys, action=action_keys)
-            else:
-                self.set_keys(sample_log_prob=log_prob_keys[0], action=action_keys[0])
+            # Force list format to ensure TensorDict selection instead of tensor get
+            # [OSWALD]: Claude suggestion -> Keep TD structure for single value TDs
+            self.set_keys(sample_log_prob=log_prob_keys, action=action_keys)
         except AttributeError:
             pass
 
